@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooking App | কুকিং অ্যাপ</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f7f8f3;color:#26382b}
+header{background:#245c43;color:white;padding:20px 16px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:bold}
+button{cursor:pointer;font-size:14px}
+.language-buttons button{padding:8px 10px;border:1px solid white;border-radius:8px;background:transparent;color:white}
+.language-buttons button.active{background:white;color:#245c43;font-weight:bold}
+.welcome{margin-top:22px}.welcome h1{font-size:25px;line-height:1.3}.welcome p{line-height:1.6}
+main{max-width:700px;margin:auto;padding:18px 15px}
+.search-box{width:100%;padding:14px;border:1px solid #dce5d9;border-radius:12px;font-size:15px;background:white}
+.section-title{margin:25px 0 14px;font-size:21px}
+.categories{display:flex;flex-wrap:wrap;gap:9px}
+.category{padding:11px;background:white;border:1px solid #e0e8dc;border-radius:12px;color:#26382b}
+.category.active{background:#245c43;color:white;border-color:#245c43}
+.recipe-card{margin-top:15px;padding:17px;background:white;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.recipe-visual{min-height:130px;background:#e5f0df;border-radius:12px;display:flex;justify-content:center;align-items:center;font-size:60px}
+.badge{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:20px;background:#e4f3e6;color:#245c43;font-size:12px}
+.recipe-card h3{font-size:21px}.description{color:#68756b;line-height:1.7;font-size:14px}
+.primary-button{width:100%;margin-top:12px;padding:13px;border:none;border-radius:10px;background:#245c43;color:white;font-weight:bold}
+.back-button{padding:10px 14px;border:none;border-radius:9px;background:#e3efe4;color:#245c43;font-weight:bold}
+.recipe-info{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+.info-box{flex:1;min-width:120px;padding:13px;border-radius:10px;background:#eef5eb;line-height:1.6;font-size:14px}
+.detail-section{margin-top:25px;padding:17px;background:white;border-radius:14px}
+.detail-section h3{margin-top:0}.detail-section li{padding:7px 0;line-height:1.6}
+.hidden{display:none!important}.footer{padding:25px 12px;text-align:center;color:#68756b;font-size:13px}
+#noResults{padding:14px 0;color:#68756b}
+</style>
+</head>
+<body>
+<header>
+  <div class="top-bar">
+    <div class="logo">🍃 Cooking App</div>
+    <div class="language-buttons">
+      <button id="enButton" class="active" onclick="changeLanguage('en')">English</button>
+      <button id="bnButton" onclick="changeLanguage('bn')">বাংলা</button>
+    </div>
+  </div>
+  <div class="welcome" id="welcomeArea">
+    <h1 id="welcomeTitle">Discover Delicious Recipes</h1>
+    <p id="welcomeText">Find recipes and enjoy cooking every day!</p>
+  </div>
+</header>
+<main>
+<section id="homePage">
+  <div class="recipe-card" id="aiChefCard" style="background:#e8f3e8;text-align:center">
+    <div style="font-size:40px">👩‍🍳</div><h2 id="aiChefTitle">Meet Your AI Chef</h2>
+    <p class="description" id="aiChefDescription">Need help with cooking? Ask me anything!</p>
+    <button class="primary-button" id="askAiButton" onclick="showComingSoon('aiComingSoon')">🤖 Ask AI Chef</button>
+  </div>
+  <div class="recipe-card" id="ingredientCard" style="background:#fff4e5;text-align:center">
+    <div style="font-size:40px">🥕</div><h2 id="ingredientTitle">Cook With My Ingredients</h2>
+    <p class="description" id="ingredientDescription">Tell us what ingredients you have, and discover what you can cook!</p>
+    <button class="primary-button" id="findRecipesButton" onclick="showComingSoon('ingredientComingSoon')">Find Recipes</button>
+  </div>
+  <input id="searchInput" class="search-box" type="search" placeholder="Search recipes..." oninput="searchRecipes()">
+  <h2 class="section-title" id="categoriesTitle">Explore Recipes</h2>
+  <div class="categories" id="categoryButtons">
+    <button type="button" class="category active" data-category="all" data-en="All Recipes" data-bn="সব রেসিপি" onclick="selectCategory('all')">All Recipes</button>
+    <button type="button" class="category" data-category="breakfast" data-en="🍳 Breakfast" data-bn="🍳 নাশতা" onclick="selectCategory('breakfast')">🍳 Breakfast</button>
+    <button type="button" class="category" data-category="lunch" data-en="🍛 Lunch" data-bn="🍛 দুপুরের খাবার" onclick="selectCategory('lunch')">🍛 Lunch</button>
+    <button type="button" class="category" data-category="dinner" data-en="🍲 Dinner" data-bn="🍲 রাতের খাবার" onclick="selectCategory('dinner')">🍲 Dinner</button>
+    <button type="button" class="category" data-category="snacks" data-en="🍰 Snacks" data-bn="🍰 হালকা খাবার" onclick="selectCategory('snacks')">🍰 Snacks</button>
+  </div>
+  <h2 class="section-title" id="popularTitle">Popular Recipes</h2>
+  <article class="recipe-card" id="pastaCard" data-category="lunch dinner" data-search-en="vegetable pasta pasta carrot onion" data-search-bn="সবজি পাস্তা পাস্তা গাজর পেঁয়াজ">
+    <div class="recipe-visual">🍝</div><span class="badge" id="recipeBadge">EASY RECIPE</span>
+    <h3 id="pastaTitle">Vegetable Pasta</h3>
+    <p class="description" id="pastaDescription">A simple vegetable pasta recipe for everyday cooking.</p>
+    <button class="primary-button" id="viewRecipeButton" onclick="openRecipe()">View Recipe</button>
+  </article>
+  <p id="noResults" class="hidden">No recipes found.</p>
+</section>
+<section id="detailsPage" class="hidden">
+  <button class="back-button" id="backButton" onclick="goHome()">← Back to Home</button>
+  <article class="recipe-card"><div class="recipe-visual">🍝</div><h2 id="detailTitle">Vegetable Pasta</h2>
+    <p class="description" id="detailDescription">A simple vegetable pasta recipe.</p>
+    <div class="recipe-info"><div class="info-box" id="timeInfo">⏱️ Cooking time<br>Not set yet</div><div class="info-box" id="servingInfo">👥 Servings<br>2 people</div></div>
+  </article>
+  <section class="detail-section"><h3 id="ingredientsTitle">Ingredients</h3><ul id="ingredientsList"><li>Pasta</li><li>Carrot</li><li>Onion</li></ul></section>
+  <section class="detail-section"><h3 id="instructionsTitle">Cooking Instructions</h3><ol id="instructionsList"><li>Prepare the ingredients.</li><li>Cook the pasta according to its package instructions.</li><li>Cook the vegetables and combine with the pasta.</li></ol></section>
+</section>
+</main>
+<footer class="footer" id="footerText">Made with care ❤️</footer>
+<script>
+let currentLanguage = "en";
+let selectedCategory = "all";
+const translations = {
+ en:{
+  welcomeTitle:"Discover Delicious Recipes",welcomeText:"Find recipes and enjoy cooking every day!",search:"Search recipes...",categories:"Explore Recipes",popular:"Popular Recipes",
+  aiChefTitle:"Meet Your AI Chef",aiChefDescription:"Need help with cooking? Ask me anything!",askAiButton:"🤖 Ask AI Chef",ingredientTitle:"Cook With My Ingredients",
+  ingredientDescription:"Tell us what ingredients you have, and discover what you can cook!",findRecipesButton:"Find Recipes",aiComingSoon:"AI Chef is coming soon!",
+  ingredientComingSoon:"Ingredient-based recipe suggestions are coming soon!",badge:"EASY RECIPE",pasta:"Vegetable Pasta",description:"A simple vegetable pasta recipe for everyday cooking.",
+  view:"View Recipe",back:"← Back to Home",ingredientsTitle:"Ingredients",instructionsTitle:"Cooking Instructions",time:"⏱️ Cooking time<br>Not set yet",
+  servings:"👥 Servings<br>2 people",ingredients:["Pasta","Carrot","Onion"],instructions:["Prepare the ingredients.","Cook the pasta according to its package instructions.","Cook the vegetables and combine with the pasta."],
+  noResults:"No recipes found.",footer:"Made with care ❤️"
+ },
+ bn:{
+  welcomeTitle:"মজাদার রেসিপি আবিষ্কার করুন",welcomeText:"রেসিপি খুঁজুন এবং প্রতিদিন রান্না উপভোগ করুন!",search:"রেসিপির নাম লিখে খুঁজুন...",categories:"খাবারের বিভাগ",popular:"জনপ্রিয় রেসিপি",
+  aiChefTitle:"আপনার AI শেফ",aiChefDescription:"রান্নার সাহায্য প্রয়োজন? আমাকে যেকোনো প্রশ্ন করুন!",askAiButton:"🤖 AI শেফকে জিজ্ঞাসা করুন",ingredientTitle:"আমার উপকরণ দিয়ে রান্না করুন",
+  ingredientDescription:"আপনার কাছে কী কী উপকরণ আছে জানান, আর কী রান্না করতে পারেন খুঁজে দেখুন!",findRecipesButton:"রেসিপি খুঁজুন",aiComingSoon:"AI শেফের সুবিধা শিগগিরই আসছে!",
+  ingredientComingSoon:"উপকরণ অনুযায়ী রেসিপি খোঁজার সুবিধা শিগগিরই আসছে!",badge:"সহজ রেসিপি",pasta:"সবজি পাস্তা",description:"প্রতিদিনের রান্নার জন্য সহজ একটি সবজি পাস্তার রেসিপি।",
+  view:"রেসিপি দেখুন",back:"← হোমে ফিরে যান",ingredientsTitle:"উপকরণ",instructionsTitle:"রান্নার পদ্ধতি",time:"⏱️ রান্নার সময়<br>এখনো নির্ধারণ করা হয়নি",
+  servings:"👥 কতজনের জন্য<br>২ জন",ingredients:["পাস্তা","গাজর","পেঁয়াজ"],instructions:["সব উপকরণ প্রস্তুত করুন।","প্যাকেটের নির্দেশনা অনুযায়ী পাস্তা সেদ্ধ করুন।","সবজি রান্না করে পাস্তার সঙ্গে মিশিয়ে নিন।"],
+  noResults:"কোনো রেসিপি পাওয়া যায়নি।",footer:"যত্নের সঙ্গে তৈরি ❤️"
+ }
+};
+function fillList(id,items){const list=document.getElementById(id);list.innerHTML="";items.forEach(text=>{const li=document.createElement("li");li.textContent=text;list.appendChild(li);});}
+function changeLanguage(language){
+ currentLanguage=language;const t=translations[language];document.documentElement.lang=language;
+ document.getElementById("welcomeTitle").textContent=t.welcomeTitle;document.getElementById("welcomeText").textContent=t.welcomeText;
+ document.getElementById("searchInput").placeholder=t.search;document.getElementById("categoriesTitle").textContent=t.categories;document.getElementById("popularTitle").textContent=t.popular;
+ ["aiChefTitle","aiChefDescription","askAiButton","ingredientTitle","ingredientDescription","findRecipesButton"].forEach(id=>document.getElementById(id).textContent=t[id]);
+ document.getElementById("recipeBadge").textContent=t.badge;document.getElementById("pastaTitle").textContent=t.pasta;document.getElementById("pastaDescription").textContent=t.description;
+ document.getElementById("viewRecipeButton").textContent=t.view;document.getElementById("backButton").textContent=t.back;document.getElementById("detailTitle").textContent=t.pasta;document.getElementById("detailDescription").textContent=t.description;
+ document.getElementById("ingredientsTitle").textContent=t.ingredientsTitle;document.getElementById("instructionsTitle").textContent=t.instructionsTitle;
+ document.getElementById("timeInfo").innerHTML=t.time;document.getElementById("servingInfo").innerHTML=t.servings;document.getElementById("noResults").textContent=t.noResults;document.getElementById("footerText").textContent=t.footer;
+ fillList("ingredientsList",t.ingredients);fillList("instructionsList",t.instructions);
+ document.querySelectorAll(".category").forEach(button=>button.textContent=button.getAttribute(language==="bn"?"data-bn":"data-en"));
+ document.getElementById("enButton").classList.toggle("active",language==="en");document.getElementById("bnButton").classList.toggle("active",language==="bn");
+ updateCategoryButtons();searchRecipes();
+}
+function showComingSoon(key){alert(translations[currentLanguage][key]);}
+function openRecipe(){document.getElementById("homePage").classList.add("hidden");document.getElementById("detailsPage").classList.remove("hidden");document.getElementById("welcomeArea").classList.add("hidden");window.scrollTo(0,0);}
+function goHome(){document.getElementById("detailsPage").classList.add("hidden");document.getElementById("homePage").classList.remove("hidden");document.getElementById("welcomeArea").classList.remove("hidden");window.scrollTo(0,0);}
+function selectCategory(category){selectedCategory=category;updateCategoryButtons();searchRecipes();}
+function updateCategoryButtons(){document.querySelectorAll(".category").forEach(button=>button.classList.toggle("active",button.dataset.category===selectedCategory));}
+function searchRecipes(){
+ const query=document.getElementById("searchInput").value.trim().toLocaleLowerCase();
+ let visibleCount=0;
+ document.querySelectorAll("#homePage article.recipe-card[data-category]").forEach(card=>{
+  const categories=card.dataset.category.split(/\s+/);
+  const text=((currentLanguage==="bn"?card.dataset.searchBn:card.dataset.searchEn)+" "+card.textContent).toLocaleLowerCase();
+  const categoryMatch=selectedCategory==="all"||categories.includes(selectedCategory);
+  const queryMatch=!query||text.includes(query);
+  const show=categoryMatch&&queryMatch;
+  card.classList.toggle("hidden",!show);
+  if(show)visibleCount++;
+ });
+ document.getElementById("noResults").classList.toggle("hidden",visibleCount>0);
+}
+</script>
+</body>
+</html>
