@@ -137,7 +137,7 @@ function searchRecipes(){
  let visibleCount=0;
  document.querySelectorAll("#homePage article.recipe-card[data-category]").forEach(card=>{
   const categories=card.dataset.category.split(/\s+/);
-  const text=((currentLanguage==="bn"?card.dataset.searchBn:card.dataset.searchEn)+" "+card.textContent).toLocaleLowerCase();
+  const text=(card.dataset.searchEn+" "+card.dataset.searchBn).toLocaleLowerCase();
   const categoryMatch=selectedCategory==="all"||categories.includes(selectedCategory);
   const queryMatch=!query||text.includes(query);
   const show=categoryMatch&&queryMatch;
